@@ -4,14 +4,33 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import NavBar from './components/Navbar/Navbar'
 import ItemsListConteiner from './components/ItemsListContainer/ItemsListConteiner'
+import Counter from './components/Counter/Counter'
+import Card from './components/Card/Card'
+import ItemDetailContainer from './components/ItemDetailContainer/ItemDetailContainer'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import Error from './components/Error/Error'
+import Home from './components/Home/Home'
+
 
 function App() {
-  
-  const greeting = 'Bienvenido!! En este sitio tendrás la posibilidad de ver algunas mascotas que necesitan tu ayuda para poder seguir con su tratamiento. Te invitamos a conocerlos.'
+
+
   return (
     <>
-      <NavBar links/>
-      <ItemsListConteiner greeting={greeting}/>
+      
+      <BrowserRouter>
+
+        <NavBar links/>
+          <Routes>
+            <Route path='/' element={<Home/>}/>
+            <Route path='/item' element={<ItemsListConteiner/>}/>
+            <Route path='/item/:idMascota' element={<ItemDetailContainer/>}/>
+            <Route path='*' element={<Error/>}/>
+          
+          </Routes>
+      </BrowserRouter>
+
+
     </>
   )
 }

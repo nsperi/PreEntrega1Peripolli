@@ -1,5 +1,4 @@
 import React, {useState} from 'react';
-import CartWidget from '../CartWidget/CartWidget';
 
 
 const Count = ({initial, stock}) => {
