@@ -1,11 +1,11 @@
 import React from 'react';
 
-const Card = ({children}) => {
+const ThemeComponent = () => {
     return (
         <div>
-            {children}
+            
         </div>
     );
 };
 
-export default Card;
+export default ThemeComponent;
