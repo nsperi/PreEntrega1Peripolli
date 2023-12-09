@@ -1,44 +1,64 @@
-import React, {useState, createContext} from 'react';
+import React, {createContext, useState} from "react";
+
 export const CartContext = createContext()
 
 export const CartProvider = ({children}) => {
 
-    const [cart, setCart] = useState([]);
-
-    const addToCart = (mascota, cantidad) => {
-        if(!isInCart(mascota.id)){
-            setCart((prev) => [...prev,{mascota,cantidad}])
-        }else{
-            alert('YA RECAUDAMOS LO NECESARIO PARA AYUDAR A ' + mascota.nombre)
-        }
-    }
-
-    const isInCart = (itemId) => {
-        return cart.some((i) => i.item.id === itemId)
-    }
-
-    const getTotalItems = (item) => {
-        let cant = 0;
-        cart.forEach((e) => cant += (e.cantidad))
-        return cant
-    }
-
-    const removeItem = () => {
-
-    }
-
-    return (
-        <CartContext.Provider value={
-            {
-                cart,
-                setCart,
-                addToCart,
-                isInCart,
-                getTotalItems,
-                removeItem
+    const [cart, setCart] = useState([])
+    const [total, setTotal] = useState(0)
+    const [cantidadTotal, setCantidadTotal] = useState(0)
+    
+    const addToCart = (mascota, quantity) => {
+        const mascotaExistente = cart.find(pet => pet.mascota.id === mascota.id);
+      
+        if (!mascotaExistente) {
+          setCart(prev => [...prev, { mascota, quantity }]);
+        } else {
+          const carritoActualizado = cart.map(pet => {
+            if (pet.mascota.id === mascota.id) {
+              return { ...pet, quantity: pet.quantity + quantity };
+            } else {
+              return pet;
             }
-            }>
+          });
+          setCart(carritoActualizado);
+        }
+      
+        setCantidadTotal(prev => prev + quantity);
+        setTotal(prev => {
+          const totalDonado = mascota.valor * quantity;
+          return prev + totalDonado;
+        });
+      };
+
+    const removeFromCart = (id) => {
+        const itemEliminado = cart.find(pet => pet.mascota.id === id);
+        const carritoActualizado = cart.filter(pet => pet.mascota.id !== id);
+    
+        setCart(carritoActualizado);
+        setCantidadTotal(prev => prev - itemEliminado.quantity);
+        setTotal(prev => prev - itemEliminado.quantity);
+    };
+    
+    const clearCart = () => {
+        setCart([]);
+        setCantidadTotal(0);
+        setTotal(0);
+    }
+    return(
+        <CartContext.Provider
+            value={
+                {
+                    cart,
+                    addToCart,
+                    removeFromCart,
+                    total,
+                    cantidadTotal,
+                    clearCart
+                }
+            }
+            >
             {children}
         </CartContext.Provider>
-    );
-};
+    )
+}
