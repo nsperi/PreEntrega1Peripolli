@@ -13,7 +13,7 @@ const CheckOut = () => {
   const { cart, total, cantidadTotal, clearCart } = useContext(CartContext);
 
   const manejarFormulario = (event) => {
-    event.preventDefault();
+    event.preventDefault()
 
     if(!nombre || !apellido || !telefono || !email || !emailConfirmacion){
       setError('Completar todos los datos')
@@ -28,7 +28,7 @@ const CheckOut = () => {
     const db = getFirestore()
 
     const orden = {
-      items:cart.map((mascota) => ({
+      items: cart.map((mascota) => ({
         id: mascota.mascota.id,
         nombre: mascota.mascota.nombre,
         cantidad: mascota.cantidad
@@ -43,14 +43,13 @@ const CheckOut = () => {
 
     Promise.all(
       orden.items.map(async (mascotaOrden) => {
-        const mascotaRef = doc(db, 'mascotas', mascotaOrden)
+        const mascotaRef = doc(db, 'mascotas', mascotaOrden.id)
         const mascotaDoc = await getDoc(mascotaRef)
         const stockActual = mascotaDoc.data().stock
 
         await updateDoc(mascotaRef, {
           stock: stockActual - mascotaOrden.cantidad
-        })
-        console.log(mascotaOrden)
+        });
       })
     )
     .then(() => {
@@ -64,11 +63,11 @@ const CheckOut = () => {
       })
     })
     .catch((error) => {
+      console.error('Error al actualizar el stock:', error);
       setError('No es posible actualizar el stock')
     })
 
   };
-
   return (
     <div>
       <h2>Ingresa tus datos</h2>

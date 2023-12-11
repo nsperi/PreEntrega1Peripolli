@@ -14,7 +14,7 @@ export const CartProvider = ({children}) => {
         if (!mascotaExistente) {
           setCart(prev => [...prev, { mascota, cantidad }]);
           setCantidadTotal(prev => prev + cantidad);
-          setTotal(prev => prev + cantidad);
+          setTotal(prev => prev + mascota.valor * cantidad);
         } else {
           const carritoActualizado = cart.map(pet => {
             if (pet.mascota.id === mascota.id) {
@@ -25,7 +25,7 @@ export const CartProvider = ({children}) => {
           });
           setCart(carritoActualizado);
           setCantidadTotal(prev => prev + cantidad);
-          setTotal(prev => prev + cantidad);
+          setTotal(prev => prev + mascota.valor * cantidad);
         }
     };
     
@@ -35,7 +35,7 @@ export const CartProvider = ({children}) => {
     
         setCart(carritoActualizado);
         setCantidadTotal(prev => prev - itemEliminado.cantidad);
-        setTotal(prev => prev - itemEliminado.mascota.cantidad);
+        setTotal(prev => prev - itemEliminado.mascota.valor * itemEliminado.cantidad);
    
       };
    
