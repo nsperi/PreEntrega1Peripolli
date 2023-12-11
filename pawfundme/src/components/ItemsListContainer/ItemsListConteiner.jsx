@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from 'react';
-import Count from '../Count/Count';
 import ItemList from '../ItemList/ItemList';
 import { useParams } from 'react-router-dom';
 import {collection, getDocs, getFirestore, query, where} from 'firebase/firestore';
+import './ItemListContainer.css'
 
 const ItemsListConteiner = () => {
     const [mascotas, setMascotas] = useState([]);
@@ -34,14 +34,14 @@ const ItemsListConteiner = () => {
     }, [categoryId]);
 
     return(
-        <>
+        <div className='container'>
             {loading ? (
             <h1 className='spinner'>CARGANDO...</h1>
             ) : (
                 <ItemList mascotas={mascotas}/>
             )}
             
-        </>
+        </div>
     )
 };
 

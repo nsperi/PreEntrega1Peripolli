@@ -20,7 +20,6 @@ const ItemCount = ({ initial, stock, onAdd }) => {
       onAdd(count);
     }
   };
-  
 
   return (
     <div>
@@ -31,5 +30,6 @@ const ItemCount = ({ initial, stock, onAdd }) => {
     </div>
   );
 };
+
 
 export default ItemCount;

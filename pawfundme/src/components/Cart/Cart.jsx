@@ -9,12 +9,12 @@ const Cart = () => {
     return (
         <div>
             <h1>CARRITO</h1>
-            {cart.length === 0 ? (
+            {cart.length == 0 ? 
                 <div>
                     <h2>TU CARRITO ESTÁ VACÍO</h2>
                     <Link to={'/'}>Ir al inicio</Link>
                 </div>
-            ) : (
+             : 
                 <div>
                     {cart.map((m) => (
                         <CartItem key={m.mascota.id} cartItem={m} removeFromCart={removeFromCart} />
@@ -23,7 +23,7 @@ const Cart = () => {
                     <button onClick={() => clearCart()}>ELIMINAR</button>
                     <Link to={'/Checkout'}>COMPLETAR DONACIÓN</Link>
                 </div>
-            )}
+            }
         </div>
     );
 };

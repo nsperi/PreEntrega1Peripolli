@@ -8,52 +8,51 @@ export const CartProvider = ({children}) => {
     const [total, setTotal] = useState(0)
     const [cantidadTotal, setCantidadTotal] = useState(0)
     
-    const addToCart = (mascota, quantity) => {
-        const mascotaExistente = cart.find(pet => pet.mascota.id === mascota.id);
-      
+    const addToCart = (mascota, cantidad) => {
+      const mascotaExistente = cart.find(pet => pet.mascota.id === mascota.id);
+    
         if (!mascotaExistente) {
-          setCart(prev => [...prev, { mascota, quantity }]);
+          setCart(prev => [...prev, { mascota, cantidad }]);
+          setCantidadTotal(prev => prev + cantidad);
+          setTotal(prev => prev + cantidad);
         } else {
           const carritoActualizado = cart.map(pet => {
             if (pet.mascota.id === mascota.id) {
-              return { ...pet, quantity: pet.quantity + quantity };
+              return { ...pet, cantidad: pet.cantidad + cantidad};
             } else {
               return pet;
             }
           });
           setCart(carritoActualizado);
+          setCantidadTotal(prev => prev + cantidad);
+          setTotal(prev => prev + cantidad);
         }
-      
-        setCantidadTotal(prev => prev + quantity);
-        setTotal(prev => {
-          const totalDonado = mascota.valor * quantity;
-          return prev + totalDonado;
-        });
-      };
-
-    const removeFromCart = (id) => {
-        const itemEliminado = cart.find(pet => pet.mascota.id === id);
-        const carritoActualizado = cart.filter(pet => pet.mascota.id !== id);
-    
-        setCart(carritoActualizado);
-        setCantidadTotal(prev => prev - itemEliminado.quantity);
-        setTotal(prev => prev - itemEliminado.quantity);
     };
     
+    const removeFromCart = (id) => {
+      const itemEliminado = cart.find(pet => pet.mascota.id === id);
+      const carritoActualizado = cart.filter(pet => pet.mascota.id !== id);
+    
+        setCart(carritoActualizado);
+        setCantidadTotal(prev => prev - itemEliminado.cantidad);
+        setTotal(prev => prev - itemEliminado.mascota.cantidad);
+   
+      };
+   
     const clearCart = () => {
-        setCart([]);
-        setCantidadTotal(0);
-        setTotal(0);
-    }
+      setCart([]);
+      setCantidadTotal(0);
+      setTotal(0);
+    };
     return(
         <CartContext.Provider
             value={
                 {
                     cart,
-                    addToCart,
-                    removeFromCart,
                     total,
                     cantidadTotal,
+                    addToCart,
+                    removeFromCart,
                     clearCart
                 }
             }

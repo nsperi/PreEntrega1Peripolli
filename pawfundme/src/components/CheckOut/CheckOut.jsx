@@ -12,59 +12,61 @@ const CheckOut = () => {
   const [ordenId, setOrdenId] = useState('');
   const { cart, total, cantidadTotal, clearCart } = useContext(CartContext);
 
-  const manejarFormulario = async (event) => {
+  const manejarFormulario = (event) => {
     event.preventDefault();
-  
-    if (!nombre || !apellido || !telefono || !email || !emailConfirmacion) {
-      setError('Por favor completa todos los campos del formulario');
+
+    if(!nombre || !apellido || !telefono || !email || !emailConfirmacion){
+      setError('Completar todos los datos')
       return;
     }
-  
-    if (email !== emailConfirmacion) {
-      setError('Por favor verifica la dirección de email');
+
+    if(email !== emailConfirmacion){
+      setError('Revisa el campo de email')
       return;
     }
-  
-    const db = getFirestore();
-  
+
+    const db = getFirestore()
+
     const orden = {
-      items: cart.map((mascota) => ({
+      items:cart.map((mascota) => ({
         id: mascota.mascota.id,
         nombre: mascota.mascota.nombre,
-        cantidadTotal: mascota.cantidad,
+        cantidad: mascota.cantidad
       })),
       total: total,
       fecha: new Date(),
       nombre,
       apellido,
       telefono,
-      email,
-    };
-    if (orden.items.some(item => Object.values(item).some(value => value === undefined))) {
-      setError('Hay campos indefinidos en los items de la orden');
-      return;
+      email
     }
-  
-    try {
-      await Promise.all(
-        orden.items.map(async (mascotaOrden) => {
-          const mascotaRef = doc(db, 'mascotas', mascotaOrden.id);
-          const mascotaDoc = await getDoc(mascotaRef);
-          const stockActual = mascotaDoc.data().stock;
-  
-          await updateDoc(mascotaRef, {
-            stock: stockActual - mascotaOrden.cantidad,
-          });
+
+    Promise.all(
+      orden.items.map(async (mascotaOrden) => {
+        const mascotaRef = doc(db, 'mascotas', mascotaOrden)
+        const mascotaDoc = await getDoc(mascotaRef)
+        const stockActual = mascotaDoc.data().stock
+
+        await updateDoc(mascotaRef, {
+          stock: stockActual - mascotaOrden.cantidad
         })
-      );
-  
-      const docRef = await addDoc(collection(db, 'ordenes'), orden);
-      setOrdenId(docRef.id);
-      clearCart();
-    } catch (error) {
-      setError('Hubo un error al procesar la orden');
-      console.log(error);
-    }
+        console.log(mascotaOrden)
+      })
+    )
+    .then(() => {
+      addDoc(collection(db, 'ordenes'), orden)
+      .then((docRef) => {
+        setOrdenId(docRef.id);
+        clearCart()
+      })
+      .catch((error) => {
+        setError('Se produjo un error al crear la orden')
+      })
+    })
+    .catch((error) => {
+      setError('No es posible actualizar el stock')
+    })
+
   };
 
   return (
@@ -74,7 +76,7 @@ const CheckOut = () => {
       {cart.map((mascota) => (
         <div key={mascota.mascota.id}>
           <p>
-            {mascota.mascota.nombre} x {mascota.cantidad}
+            {mascota.mascota.nombre}: Donar ${mascota.cantidad}
           </p>
         </div>
       ))}
